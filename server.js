@@ -3,10 +3,22 @@ var url = require('url');
 
 function start(route, handle) {
   http.createServer((request, response) => {
+    var postData = '';
     var pathname = url.parse(request.url).pathname;
     console.log('Request for ' + pathname + ' received.');
 
-    route(handle, pathname, response);
+    request.setEncoding('utf8');
+
+    request.addListener('data', postDataChunk => {
+      postData += postDataChunk;
+      console.log(`Received POST data chuck '${postDataChunk}'.`);
+    });
+
+    request.addListener('end', () => {
+      console.log('end');
+      route(handle, pathname, response, postData);
+    });
+
   }).listen(8888);
   
   console.log('Server has started.');

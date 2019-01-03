@@ -15,7 +15,6 @@ function start(route, handle) {
     });
 
     request.addListener('end', () => {
-      console.log('end');
       route(handle, pathname, response, postData);
     });
 
